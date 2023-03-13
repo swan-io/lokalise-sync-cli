@@ -1,0 +1,40 @@
+{
+  "name": "lokalise-sync-cli",
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=18.0.0",
+    "yarn": "^1.20.0"
+  },
+  "type": "module",
+  "files": [
+    "bin/lokalise.mjs",
+    "src/lokalise.js",
+    "src/lokalise.d.ts",
+    "HISTORY.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "bin": {
+    "lokalise": "bin/lokalise-sync.mjs"
+  },
+  "repository": "git@github.com:swan-io/lokalise-sync-cli.git",
+  "author": "bloodyowl <bloodyowl@icloud.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/adm-zip": "^0.5.0",
+    "@types/node": "^18.14.6",
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "@formatjs/icu-messageformat-parser": "^2.3.0",
+    "@lokalise/node-api": "^9.6.1",
+    "adm-zip": "^0.5.10",
+    "chalk": "^5.2.0",
+    "commander": "^10.0.0",
+    "glob": "^9.2.1",
+    "ts-pattern": "^4.2.1"
+  }
+}
