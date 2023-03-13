@@ -1,5 +1,5 @@
 {
-  "name": "@swan-io/lokalise-sync-cli",
+  "name": "lokalise-sync-cli",
   "version": "1.0.0",
   "engines": {
     "node": ">=18.0.0",
