@@ -20,6 +20,10 @@
   "bin": {
     "lokalise": "bin/lokalise-sync.mjs"
   },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
   "repository": "git@github.com:swan-io/lokalise-sync-cli.git",
   "author": "bloodyowl <bloodyowl@icloud.com>",
   "license": "MIT",
