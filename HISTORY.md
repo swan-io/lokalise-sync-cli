@@ -1,3 +1,9 @@
+# 1.0.2
+
+Changes:
+
+- Fix bin path (c35bad4)
+
 # 1.0.1
 
 Changes:
