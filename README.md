@@ -3,7 +3,7 @@
 ## Install
 
 ```console
-$ yarn add --dev lokalise-sync-cli
+$ yarn add @swan-io/lokalize-sync-cli
 ```
 
 ## Getting started
