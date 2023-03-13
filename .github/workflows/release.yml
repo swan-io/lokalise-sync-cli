@@ -1,9 +1,9 @@
-name: Build & test
+name: Release
 
 on:
   push:
-    branches:
-      - "*"
+    tags:
+      - "v*"
 
 jobs:
   test:
@@ -21,3 +21,8 @@ jobs:
 
       - name: Compile project
         run: yarn build
+
+      - name: Release on npm
+        run: yarn publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
