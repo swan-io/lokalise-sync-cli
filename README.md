@@ -20,7 +20,7 @@ module.exports = [
     defaultLocale: "en",
     paths: {
       src: "/your/app/absolute/path",
-      locales: "/your/app/locales/absolute/path,
+      locales: "/your/app/locales/absolute/path",
     },
   },
 ]
