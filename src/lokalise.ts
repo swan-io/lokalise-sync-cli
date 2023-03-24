@@ -11,13 +11,7 @@ import os from "node:os";
 import path from "node:path";
 import { isMatching, P } from "ts-pattern";
 
-assert(process.env.LOKALISE_API_KEY != null, "Missing LOKALISE_API_KEY");
-
 const program = new Command();
-
-const lokaliseApi = new LokaliseApi({
-  apiKey: process.env.LOKALISE_API_KEY,
-});
 
 type Project = {
   name: string;
@@ -32,6 +26,13 @@ type Project = {
 const { default: projects } = await import(
   path.join(process.cwd(), "lokalise.config.js")
 );
+
+// Check if api exists after loading config to let developers set env variables in their config
+assert(process.env.LOKALISE_API_KEY != null, "Missing LOKALISE_API_KEY");
+
+const lokaliseApi = new LokaliseApi({
+  apiKey: process.env.LOKALISE_API_KEY,
+});
 
 const isConfigurationCorrect = isMatching(
   P.array({
@@ -106,11 +107,11 @@ const lintLocalesFile = (json: Record<string, string>) => {
 };
 
 async function pullProject(project: Project) {
-  // We only write english translations manually:
+  // We only write default translations manually:
   // this is our source of truth for new translations
   const localTranslations = JSON.parse(
     fs.readFileSync(
-      path.join(process.cwd(), "packages", project.name, "src/locales/en.json"),
+      path.join(project.paths.locales, `${project.defaultLocale}.json`),
       "utf-8"
     )
   );
@@ -193,10 +194,7 @@ async function pullProject(project: Project) {
   // Write translation files
   Object.entries(pulledLocales).forEach(([localeName, json]) => {
     const filePath = path.join(
-      process.cwd(),
-      "packages",
-      project.name,
-      "src/locales/",
+      project.paths.locales,
       `${localeName}.json`
     );
     const displayFilePath = path.relative(process.cwd(), filePath);
@@ -233,12 +231,7 @@ const pushProject = async (project: Project) => {
 
   console.log("");
 
-  const localesDir = path.join(
-    process.cwd(),
-    "packages",
-    project.name,
-    "src/locales"
-  );
+  const localesDir = project.paths.locales;
   const files = fs
     .readdirSync(localesDir)
     .filter((item) => path.extname(item) === ".json");
@@ -249,7 +242,7 @@ const pushProject = async (project: Project) => {
     const displayFilePath = path.relative(process.cwd(), filePath);
 
     const locales = fs.readFileSync(
-      path.join(localesDir, localeName + ".json"),
+      path.join(localesDir, `${localeName}.json`),
       "utf-8"
     );
     // Upload new keys to Lokalise
@@ -273,12 +266,7 @@ const pushProject = async (project: Project) => {
 };
 
 const lintProject = (project: Project) => {
-  const localesDir = path.join(
-    process.cwd(),
-    "packages",
-    project.name,
-    "src/locales"
-  );
+  const localesDir = project.paths.locales;
   let isOk = true;
 
   fs.readdirSync(localesDir)
@@ -304,12 +292,7 @@ const lintProject = (project: Project) => {
 };
 
 const cleanupProject = (project: Project) => {
-  const localesDir = path.join(
-    process.cwd(),
-    "packages",
-    project.name,
-    "src/locales"
-  );
+  const localesDir = project.paths.locales;
 
   const allowedKeys = new Set<string>();
   const referenceJson = JSON.parse(
@@ -339,12 +322,10 @@ const cleanupProject = (project: Project) => {
 };
 
 const findUnusedInProject = (project: Project) => {
-  const srcDir = path.join(process.cwd(), "packages", project.name, "src");
+  const srcDir = project.paths.src;
   const referenceLocalePath = path.join(
-    process.cwd(),
-    "packages",
-    project.name,
-    "src/locales/en.json"
+    project.paths.locales,
+    `${project.defaultLocale}.json`
   );
   const referenceLocaleDisplayPath = path.relative(
     process.cwd(),
@@ -427,11 +408,9 @@ const onlyKeepKeysInJson = (jsonFilePath: string, keysToKeep: Set<string>) => {
 };
 
 const findAndRemoveUnusedInProject = (project: Project) => {
-  const srcDir = path.join(process.cwd(), "packages", project.name, "src");
   const { keptKeys } = findUnusedInProject(project);
 
-  const locales = path.join(srcDir, "locales");
-  const localeFiles = globSync(path.join(locales, "*.json"));
+  const localeFiles = globSync(path.join(project.paths.locales, "*.json"));
 
   for (const localeFile of localeFiles) {
     onlyKeepKeysInJson(localeFile, keptKeys);
