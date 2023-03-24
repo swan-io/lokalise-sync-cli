@@ -3,7 +3,7 @@
 ## Install
 
 ```console
-$ yarn add @swan-io/lokalize-sync-cli
+$ yarn add @swan-io/lokalise-sync-cli
 ```
 
 ## Getting started
@@ -13,6 +13,8 @@ First, provide a `LOKALISE_API_KEY` environment variable, containing your Lokali
 Create a `lokalise.config.js` file at the root of your project:
 
 ```js
+require("dotenv").config();
+
 module.exports = [
   {
     name: "your-app-name",
